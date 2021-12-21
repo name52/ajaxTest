@@ -80,7 +80,7 @@
       if(city != ''){
         $.ajax({
           type: 'GET',
-          url: 'https://cors-anywhere.herokuapp.com/http://openapi.seoul.go.kr:8088/' + apiKey + '/json/RealtimeCityAir/1/25/' + findCityArea(city) + '/' + city,
+          url: 'https://cors-anywhere.herokuapp.com/https://openapi.seoul.go.kr:8088/' + apiKey + '/json/RealtimeCityAir/1/25/' + findCityArea(city) + '/' + city,
           dataType: "json",
           success: function (response) {
             // 서버와의 통신 성공시

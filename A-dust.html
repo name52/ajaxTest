@@ -80,7 +80,7 @@
       if(city != ''){
         $.ajax({
           type: 'GET',
-          url: 'https://openapi.seoul.go.kr' + apiKey + '/json/RealtimeCityAir/1/25/' + findCityArea(city) + '/' + city,
+          url: 'https://openapi.seoul.go.kr/' + apiKey + '/json/RealtimeCityAir/1/25/' + findCityArea(city) + '/' + city,
           dataType: "json",
           success: function (response) {
             // 서버와의 통신 성공시

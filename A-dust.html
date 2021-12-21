@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A유형-가답</title>
+</head>
+<body>
+  <div class="bg-gray-50">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+      <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+        <span class="block">서울 공공 데이터</span>
+        <span class="block text-indigo-600">권역별 미세먼지</span>
+      </h2>
+      <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+        <input type="text" name="f-city" id="f-city" class="shadow-sm sm:text-sm border-gray-300 rounded-md mr-3 px-3">
+        <div class="inline-flex rounded-md shadow">
+          <a href="#" class="btn-update inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 flex-shrink-0">
+            업데이트
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="item-list max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 space-y-10">
+    <div class="item shadow-lg">
+      <div class="item-hd px-4 py-5 sm:px-6">
+        <h3 class="i-city text-lg leading-6 font-medium text-gray-900">
+          MSRRGN_NM
+        </h3>
+        <p class="i-date mt-1 max-w-2xl text-sm text-gray-500">
+          MSRDT
+        </p>
+      </div>
+      <div class="item-body border-t border-gray-200">
+        <dl>
+          <div class="i-dust bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              미세먼지(㎍/㎥)
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              PM10
+            </dd>
+          </div>
+          <div class="i-highdust bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              초미세먼지농도(㎍/㎥)
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              PM25
+            </dd>
+          </div>
+          <div class="i-level bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              통합대기환경등급
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              IDEX_NM
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <script src="//cdn.tailwindcss.com"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script charset="utf-8">
+    $('.btn-update').on('click', updateInfo);
+
+    function updateInfo(e) {
+      e.preventDefault();
+
+      var apiKey = '6c644e4e5035326338316e7159416f';
+      var city = $('#f-city').val();
+
+      // input 빈값 입력 방지
+      if(city != ''){
+        $.ajax({
+          type: 'GET',
+          url: '//openapi.seoul.go.kr:8088/' + apiKey + '/json/RealtimeCityAir/1/25/' + findCityArea(city) + '/' + city,
+          dataType: "json",
+          success: function (response) {
+            // 서버와의 통신 성공시
+            var cityInfo = response.RealtimeCityAir.row[0];
+            $('.item .i-city').text(cityInfo.MSRSTE_NM);
+            $('.item .i-date').text(cityInfo.MSRDT);
+            $('.item .i-dust dd').text(cityInfo.PM10);
+            $('.item .i-highdust dd').text(cityInfo.PM25);
+            $('.item .i-level dd').text(cityInfo.IDEX_NM);
+          },
+          error:function(request, status){
+            // 서버와의 통신 실패시
+            alert('code: ' + request.status + '\n' + 'message: ' + request.statusText + '\n');
+          }
+        })
+      } else {
+        alert('구역을 입력해주세요');
+      }
+    }
+
+    function findCityArea(city) {
+      var tmp = '';
+      switch (city) {
+        case '중구': case '종로구': case '용산구':
+          tmp = '도심권';
+          break;
+        case '은평구': case '서대문구': case '마포구':
+          tmp = '서북권'
+          break;
+        case '광진구': case '성동구': case '중랑구': case '동대문구': case '성북구': case '도봉구': case '강북구': case '노원구':
+          tmp = '동북권'
+          break;
+        case '강서구': case '구로구': case '영등포구': case '동작구': case '관악구': case '금천구': case '양천구': case '노원구':
+          tmp = '서남권'
+          break;
+        case '강남구': case '서초구': case '송파구': case '강동구':
+          tmp = '동남권'
+          break;
+        default:
+          tmp = 'unknown';
+      }
+      return tmp;
+    }
+  </script>
+</body>
+</html>

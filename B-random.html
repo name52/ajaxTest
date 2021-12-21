@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B유형-가답</title>
+</head>
+<body>
+  <div class="bg-gray-50">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+      <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+        <span class="block">OpenAPI</span>
+        <span class="block text-pink-600">랜덤 이미지 사진 불러오기</span>
+      </h2>
+      <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+        <div class="inline-flex rounded-md shadow">
+          <a href="#" class="btn-change inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 flex-shrink-0">
+            change
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="img-area">
+    <img src="//splashbase.s3.amazonaws.com/getrefe/regular/tumblr_nimfq02tw41slhhf0o1_1280.jpg" alt="tumblr_nimfq02tw41slhhf0o1_1280">
+  </div>
+
+  <!-- css framework -->
+  <script src="//cdn.tailwindcss.com"></script>
+  <!-- jquery cdn -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- custom script -->
+  <script charset="utf-8">
+    // 버튼 클릭시 changeImage함수 실행
+    $('.btn-change').on('click', changeImage);
+
+    function changeImage(e) {
+      // 기본 이동 효과 막기
+      e.preventDefault();
+
+      // api서버 비동기통신
+      $.ajax({
+        type: "GET",
+        url: "//www.splashbase.co/api/v1/images/random",
+        dataType: "json",
+        success: function (response) {
+          // 서버와의 통신 성공시
+          var randomImg = response.url;
+          $(".img-area img").attr("src", randomImg);
+        },
+        error:function(request, status){
+          // 서버와의 통신 실패시
+          alert('code: ' + request.status + '\n' + 'message: ' + request.statusText + '\n');
+        }
+      })
+    }
+  </script>
+</body>
+</html>
